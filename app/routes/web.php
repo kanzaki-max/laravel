@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +19,33 @@ use App\Http\Controllers\UserController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return redirect('/login');
+})->name('home');
 
-// ログイン画面
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// 認証ルート
+Auth::routes();
+
+// 在庫管理画面
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
+
+// 商品詳細画面
+Route::get('product/{id}', [ProductController::class, 'show'])->name('product.show');
+
+Route::resource('inventory', InventoryController::class);
+Route::resource('products', ProductController::class);
+Route::resource('user', UserManagementController::class);
+
+// 管理者関連ルート
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+});
+
+// 一般ユーザー関連ルート
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
+});
+
 // 在庫管理画面
 Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
 // 商品詳細画面
