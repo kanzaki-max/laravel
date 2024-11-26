@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
 use App\Models\Product;
+use App\Models\Category;
 
 class InventoryController extends Controller
 {
@@ -15,7 +16,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::with('product')->get();
+        $inventories = Inventory::with(['product', 'store'])->get();
         return view('inventory.index', compact('inventories'));
     }
 
@@ -26,8 +27,9 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        $products = Product::all();
-        return view('inventory.create', compact('products'));
+        $categories = Category::all(); 
+        $products = Product::all();   
+        return view('inventory.create', compact('categories', 'products'));
     }
 
     /**
