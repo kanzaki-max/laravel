@@ -15,6 +15,6 @@ class AdminMiddleware
         }
 
         // 管理者でない場合はログインページへリダイレクト
-        return redirect('/login')->with('error', '管理者専用ページにアクセスする権限がありません。');
+        return redirect('/login');
     }
 }

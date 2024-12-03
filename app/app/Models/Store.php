@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class store extends Model
+class Store extends Model
 {
     protected $fillable = ['name', 'location'];
 }

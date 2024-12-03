@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\IncomingStock;
 
 class InventoryController extends Controller
 {
@@ -40,13 +41,21 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
+            'arrival_date' => 'required|date',
         ]);
-
-        Inventory::create($request->all());
-        return redirect()->route('inventory.index')->with('success', '在庫を追加しました。');
+    
+        IncomingStock::create([
+            'product_id' => $validated['product_id'],
+            'quantity' => $validated['quantity'],
+            'income_date' => $validated['arrival_date'], 
+            'status' => 'pending',
+        ]);
+    
+        return redirect()->route('products.index');
+            
     }
 
     /**
@@ -68,7 +77,7 @@ class InventoryController extends Controller
      */
     public function edit($id)
     {
-        $inventory = Inventory::findOrFail($id);
+        $inventory = IncomingStock::findOrFail($id);
         $products = Product::all();
         return view('inventory.edit', compact('inventory', 'products'));
     }
@@ -82,14 +91,15 @@ class InventoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+    $validated = $request->validate([
+        'quantity' => 'required|integer|min:1',
+        'income_date' => 'required|date',
+    ]);
 
-        $inventory = Inventory::findOrFail($id);
-        $inventory->update($request->all());
-        return redirect()->route('inventory.index')->with('success', '在庫を更新しました。');
+    $inventory = IncomingStock::findOrFail($id);
+    $inventory->update($validated);
+
+    return redirect()->route('products.index')->with('success', '在庫情報が更新されました。');
     }
 
     /**
@@ -100,7 +110,9 @@ class InventoryController extends Controller
      */
     public function destroy($id)
     {
-        Inventory::destroy($id);
-        return redirect()->route('inventory.index')->with('success', '在庫を削除しました。');
+        $inventory = IncomingStock::findOrFail($id);
+        $inventory->delete();
+        
+        return redirect()->route('products.index');
     }
 }

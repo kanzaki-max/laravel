@@ -22,7 +22,7 @@ class UserManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(array $data)
     {
         return view('users.create');
     }
@@ -35,11 +35,11 @@ class UserManagementController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|email|unique:users,email',
+        //     'password' => 'required|string|min:8|confirmed',
+        // ]);
 
         User::create([
             'name' => $request->name,
@@ -47,7 +47,7 @@ class UserManagementController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'ユーザーを登録しました。');
+        return redirect()->route('dashboard');
     }
 
     /**

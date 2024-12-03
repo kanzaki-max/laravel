@@ -3,8 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProductController;
+// use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryController;
+// use App\Http\Controllers\CategoryController;
 
 Auth::routes();
 
@@ -19,30 +20,47 @@ Auth::routes();
 |
 */
 
-// 未認証のユーザーに対して /home ルートにアクセスするとログイン画面にリダイレクト
+// 未認証のユーザーをログインページにリダイレクト
 Route::get('/', function () {
     return redirect('login'); 
 })->name('home');
 
+// ログイン後、ユーザーのロールに応じてリダイレクト
 Route::middleware('auth')->get('/home', function () {
     return redirect(auth()->user()->role === 'admin' ? '/admin/dashboard' : '/user/dashboard');
 });
 
-// 管理者ダッシュボード
-Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard')->middleware('auth');
-
-// 一般ユーザーダッシュボード
-Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard')->middleware('auth');
-
-Route::resource('products', ProductController::class)->middleware('auth');
-
-Route::resource('inventory', InventoryController::class)->middleware('auth');
-
+// 管理者専用ルート
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/user/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/user', [UserController::class, 'store'])->name('users.store');
+    // 管理者ダッシュボード
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    // 管理者専用のユーザー管理ルート
+    Route::get('/admin/users', [UserController::class, 'adminIndex'])->name('users.index');
+    Route::get('/admin/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/admin/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/admin/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // 管理者専用の製品管理ルート
+    Route::resource('products', ProductController::class)->only(['index', 'edit', 'update', 'destroy']);
 });
 
-Route::resource('categories', CategoryController::class);
+// 一般ユーザー専用ルート
+Route::middleware(['auth'])->group(function () {
+    // ユーザーダッシュボード
+    Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
 
-Route::get('products', [ProductController::class, 'index'])->name('products.index');
+    // 商品管理
+    Route::resource('products', ProductController::class);
+
+    // 在庫管理
+    Route::resource('inventory', InventoryController::class);
+
+    // カテゴリ管理
+    Route::resource('categories', CategoryController::class);
+
+    // 在庫登録
+    Route::post('/inventory/store', [InventoryController::class, 'store'])->name('inventory.store'); 
+});

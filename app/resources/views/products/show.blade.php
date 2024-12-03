@@ -8,7 +8,7 @@
             <h5 class="card-title">商品名: {{ $product->name }}</h5>
             <p class="card-text">カテゴリ: {{ $product->category }}</p>
             <p class="card-text">在庫数: {{ $product->quantity }}</p>
-            <p class="card-text">重量: {{ $product->weight }} kg</p>
+            <p class="card-text">重量: {{ $product->weight }} g</p>
         </div>
     </div>
     <a href="{{ route('products.index') }}" class="btn btn-secondary mt-3">戻る</a>

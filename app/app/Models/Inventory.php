@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
+// use App\Models\Product;
 
 class Inventory extends Model
 {
@@ -19,17 +19,12 @@ class Inventory extends Model
         'store_id',    // 店舗ID
         'quantity',    // 在庫数
         'weight',      // 重量
+        'created_at', //入荷予定日
     ];
 
     // 商品リレーション
     public function product()
     {
-        return $this->belongsTo(App\Models\Product::class);
-    }
-
-    // 店舗リレーション
-    public function store()
-    {
-        return $this->belongsTo(App\Models\Store::class);
+        return $this->belongsTo(Product::class);
     }
 }
