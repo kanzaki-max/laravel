@@ -31,7 +31,7 @@ class CategoryController extends Controller
         // カテゴリの保存
         Category::create($request->all());
 
-        return redirect()->route('categories.index');
+        return redirect()->route('products.create');
     }
 
     // カテゴリ編集画面の表示
@@ -44,9 +44,9 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         // バリデーション
-        $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255|unique:categories,name,',
+        // ]);
 
         // カテゴリの更新
         $category->update($request->all());

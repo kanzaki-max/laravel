@@ -81,7 +81,22 @@ class UserManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // 画像の保存処理
+        if ($request->hasFile('image')) {
+            // 古い画像を削除
+            if ($product->image) {
+                \Storage::delete($product->image);
+            }
+
+        // 新しい画像を保存
+        $path = $request->file('image')->store('products');
+        $validated['image'] = $path;
+        }
+
+        // データの更新
+        $product->update($validated);
+
+        return redirect()->route('products.index');
     }
 
     /**

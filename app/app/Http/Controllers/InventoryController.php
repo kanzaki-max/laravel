@@ -44,12 +44,14 @@ class InventoryController extends Controller
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
+            'weight' => 'required|numeric|min:1',
             'arrival_date' => 'required|date',
         ]);
     
         IncomingStock::create([
             'product_id' => $validated['product_id'],
             'quantity' => $validated['quantity'],
+            'weight' => $validated['weight'],
             'income_date' => $validated['arrival_date'], 
             'status' => 'pending',
         ]);

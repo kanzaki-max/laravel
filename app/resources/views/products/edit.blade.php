@@ -26,7 +26,11 @@
         </div>
         <div class="form-group">
             <label for="weight">重量</label>
-            <input type="number" name="quantity" class="form-control" value="{{ $product->weight }}" required>
+            <input type="number" name="weight" class="form-control" value="{{ $product->weight }}" required>
+        </div>
+        <div class="form-group">
+            <label for="image">画像</label>
+            <input type="file" name="image" id="image" class="form-control" />
         </div>
         <button type="submit" class="btn btn-primary">更新</button>
     </form>

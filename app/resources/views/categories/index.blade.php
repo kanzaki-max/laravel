@@ -14,7 +14,7 @@
             <tr>
                 <th>ID</th>
                 <th>カテゴリ名</th>
-                <th>操作</th>
+                <th>編集・削除</th>
             </tr>
         </thead>
         <tbody>
